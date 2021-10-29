@@ -1,0 +1,53 @@
+version: "3.3"
+ 
+services:
+  master:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+    volumes:
+      - ./master/sql:/tmp/sql
+      - ./master/conf.d:/etc/mysql/conf.d
+      - ./mnt/master/mysql:/var/lib/mysql
+    networks:
+      mysql:
+        ipv4_address: 172.23.0.2
+
+
+  slave1:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+    volumes:
+      - ./slave1/sql:/tmp/sql
+      - ./slave1/conf.d:/etc/mysql/conf.d
+      - ./mnt/slave1/mysql:/var/lib/mysql
+    networks:
+      mysql:
+        ipv4_address: 172.23.0.3
+    depends_on:
+     - master
+
+  slave2:
+    image: mysql:5.7
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+    volumes:
+      - ./slave2/sql:/tmp/sql
+      - ./slave2/conf.d:/etc/mysql/conf.d
+      - ./mnt/slave2/mysql:/var/lib/mysql
+    networks:
+      mysql:
+        ipv4_address: 172.23.0.4
+    depends_on:
+     - master
+
+networks:
+  mysql:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.23.0.0/24

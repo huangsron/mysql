@@ -1,0 +1,7 @@
+[mysqld]
+server_id=1
+log-bin=mysql-bin
+
+# specify replication database
+binlog_do_db = repl
+#binlog_do_db = test2
